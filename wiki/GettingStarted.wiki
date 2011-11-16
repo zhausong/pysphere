@@ -1,0 +1,82 @@
+= Quick guide to start using PySphere =
+
+== Installation ==
+
+PySphere is platform independent and works with python 2.5, 2.6, and 2.7.
+
+The simplest way is using  [http://pypi.python.org/pypi/setuptools setuptools]' easy_install:
+
+`easy_install pysphere`
+
+You can also find the source package and windows installer in the downloads section.
+
+To install the windows executable just run the file and follow the wizard's instructions.
+ 
+To install it from the source package:
+  # Unzip the package
+  # run: `python setup.py install`
+
+== Connecting to a server ==
+
+PySphere can interact with ESX, ESXi, Virtual Center, Virtual Server, and it should work with any other VMWare product exposing the vSphere Web Services SDK.
+
+First you need to create a server instance from the `VIServer` class:
+{{{
+from pysphere import VIServer
+server = VIServer()
+}}}
+
+Next, you must call the connect method and provide the server hostname or ip and the user credentials. E.g. For an ESX server on 192.168.100.100 with a registered user jdoe with password 'secret':
+{{{
+server.connect("192.168.100.100", "jdoe", "secret")
+}}}
+
+By default, pysphere will look the web service in VMWare's default url which is `https://[SERVER]/sdk`.
+If your server is configured to use http instead of https or if it's serving on a different port. Then you need to provide the connect method with the full URL instead of just the hostname or ip. For example:
+{{{
+server.connect("http://192.168.100.100:8080/sdk", "jdoe", "secret")
+}}}
+
+For debugging you can also provide the keyword argument `trace_file` with a path to a file where the SOAP requests and responses generated during you session will be stored:
+
+server.connect("192.168.100.100", "jdoe", "secret", trace_file="debug.txt")
+
+== Server properties and methods ==
+
+If you want to start working with VMs right away you may skip this section.
+
+Once you created your VIServer instance and got connected you are able to retrieve info from the server.
+
+=== Getting the server type and vSphere API version ===
+
+{{{
+print server.get_server_type() #will print for example "VirtualCenter" or "VMWare Server"
+
+print server.get_api_version() #will print for example "4.1"
+}}}
+
+=== Getting the server's registered VMs ===
+
+This method will return a list of strings with all the VM's .vmx file paths that are registered in the server. You can use them later to connect to those vms.
+
+{{{
+vmlist = server.get_registered_vms()
+}}}
+
+You may also use one or more filters through keyword arguments:
+
+  * datacenter: Name of the datacenter to get vms from.
+  * cluster: Name of the cluster to get vms from.
+  * resource_pool: Name of the resource pool to get vms from.
+  * status: one of 'poweredOn', 'poweredOff', 'suspended'. To get only VM with that power state.
+
+Note: if  cluster is set then datacenter is ignored and if resource pool is set both, datacenter and cluster, are ignored.
+
+For example, to get all powered on VMs from the 'Windows XP' resource pool:
+
+{{{
+vmlist = server.get_registered_vms(resource_pool='Windows XP', status='poweredOn')
+}}}
+
+
+=NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON=
