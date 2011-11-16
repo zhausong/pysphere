@@ -1,4 +1,4 @@
-= Quick guide to start using PySphere =
+= Quick guide to start using PySphere <g:plusone size="medium"></g:plusone> = 
 
 == Installation ==
 
@@ -26,13 +26,13 @@ from pysphere import VIServer
 server = VIServer()
 }}}
 
-Next, you must call the connect method and provide the server hostname or ip and the user credentials. E.g. For an ESX server on 192.168.100.100 with a registered user jdoe with password 'secret':
+Next, you must call the connect method and provide the server hostname or IP and the user credentials. E.g. For an ESX server on 192.168.100.100 with a registered user jdoe with password 'secret':
 {{{
 server.connect("192.168.100.100", "jdoe", "secret")
 }}}
 
-By default, pysphere will look the web service in VMWare's default url which is `https://[SERVER]/sdk`.
-If your server is configured to use http instead of https or if it's serving on a different port. Then you need to provide the connect method with the full URL instead of just the hostname or ip. For example:
+By default, pysphere will look the web service in VMWare's default URL which is `https://[SERVER]/sdk`.
+If your server is configured to use http instead of https or if it's serving on a different port. Then you need to provide the connect method with the full URL instead of just the hostname or IP. For example:
 {{{
 server.connect("http://192.168.100.100:8080/sdk", "jdoe", "secret")
 }}}
