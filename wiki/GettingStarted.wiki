@@ -78,5 +78,89 @@ For example, to get all powered on VMs from the 'Windows XP' resource pool:
 vmlist = server.get_registered_vms(resource_pool='Windows XP', status='poweredOn')
 }}}
 
+=== Disconnecting from the server ===
 
-=NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON=
+Once you've finalized your program or script it's recommended to logout from the server, that will release all the objects at the server side that were created during your session. If not, the server will eventually drop your session after a period of inactivity.
+
+To disconnect from the server, just execute:
+
+{{{
+server.disconnect()
+}}}
+
+
+== Working with virtual machines ==
+
+Once you have created your VIServer instance and invoked the connect method (see [GettingStarted#Connecting_to_a_server Connecting to a server]) you are ready to retrieve VM instances and operate with them.
+
+The are two main methods you can use to get a VM instance:
+  # *get_vm_by_path*: retrieve a virtual machine by its virtual machine configuration file path. To get this value via the VMWare VI Client:
+    # Right click on the vm icon from the resources tree and select "Edit settings..."
+    # Go to the "Options" tab.
+    # The value is on the "Virtual Machine Configuration File" field
+  # *get_vm_by_name*: retrieve a virtual machine by its assigned name.
+
+You should try to use the first method. It is faster and you won't have two VMs with the same path while you might have two different VMs with the same name assigned in which case get_vm_by_name will return the first one to be found.
+
+Example:
+
+{{{
+from pysphere import VIServer
+server = VIServer()
+server.connect("192.168.100.100", "jdoe", "secret")
+
+vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx")
+vm2 = server.get_vm_by_name("My Open BSD 4.5")
+}}}
+
+both methods can receive an additional "datacenter" keyword argument that will limit the search within the specified datacenter:
+
+{{{
+vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx", "DEVELOPMENT")
+vm2 = server.get_vm_by_name("My Open BSD 4.5", "IT")
+}}}
+
+=== Getting VM properties ===
+
+*Virtual Machine Status:*
+
+The following code
+{{{
+print vm1.get_status()
+}}}
+
+will print one of these values (strings):
+  * 'POWERED ON'
+  * 'POWERED OFF'
+  * 'SUSPENDED'
+  * 'POWERING ON'
+  * 'POWERING OFF'
+  * 'SUSPENDING'
+  * 'RESETTING'
+  * 'BLOCKED ON MSG'
+  * 'REVERTING TO SNAPSHOT'
+
+The three first states are the basic ones. I.e. a virtual machine will  always be in one of those three, however by inspecting the list of queued tasks the other statuses can be implied. E.g. if a VM is powered off but a user has started a power on action, then the implied status will be 'POWERING ON'. The status 'BLOCKED ON MSG' means that VM can't be used until the user decides an action to be taken on that VM (one of the most common message triggered is "This virtual machine may have been moved or copied")
+
+Some products as "VMware Server" do not support querying the tasks history so you'll always get one of the first three statuses.
+Besides you can force pysphere to return one of the three basic statuses by providing the an extra keyword argument "basic_status" with 'True':
+
+{{{
+print vm1.get_status(basic_status=True)
+}}}
+
+You might also ask if the VM is in a particular status (which will return True or False) by invoking these methods:
+{{{
+print vm1.is_powering_off()
+print vm1.is_powered_off()
+print vm1.is_powering_on()
+print vm1.is_powered_on()
+print vm1.is_suspending()
+print vm1.is_suspended()
+print vm1.is_resetting()
+print vm1.is_blocked_on_msg()
+print vm1.is_reverting()
+}}}
+
+
+==NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON==
