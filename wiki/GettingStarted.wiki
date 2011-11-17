@@ -122,7 +122,7 @@ vm2 = server.get_vm_by_name("My Open BSD 4.5", "IT")
 
 === Getting VM properties ===
 
-*Virtual Machine Status:*
+====*Virtual Machine Status:*====
 
 The following code
 {{{
@@ -161,6 +161,56 @@ print vm1.is_resetting()
 print vm1.is_blocked_on_msg()
 print vm1.is_reverting()
 }}}
+
+====*Getting basic properties:*====
+
+Pysphere provides two methods to get some basic properties from a VM in a simple way. If you are looking to retrieve any other property that is not being listed here see the [AdvancedUsage Advanced Usage] section.
+
+  * *get_properties*: retrieves a python dictionary with all the properties available at the time (Not all the vms will have all the properties, as some properties depend on the specific configuration, vmware tools, or the machine power status).
+  * *get_property(property_name)*: retrieves the value of the requested property, or None if that property does not exist. E.g:
+
+{{{
+vm1.get_properties()
+}}}
+might return:
+{{{
+{'guest_id': 'ubuntuGuest',
+ 'path': '[DataStore1] Ubuntu/Ubuntu-10.vmx',
+ 'guest_full_name': 'Ubuntu Linux (32-bit)',
+ 'name': 'Ubuntu 10.10 Desktop 2200',
+ 'mac_address': '00:50:56:aa:01:a7'
+}
+}}}
+
+{{{
+print vm1.get_property('mac_address') #prints '00:50:56:aa:01:a7'
+}}}
+
+For performance reasons, when pysphere creates the VM instance, all the properties are queried in a single request and cached. But some of them are volatile, their values might change, new properties can appear or an existing property might disappear. For example, to get the `ip_address` property the VM needs to have the VMWare tools installed and be powered on. To be sure the value you request is updated you might add the 'from_cache' keyword argument to `get_property` or `get_properties` with the value `False`. This will refresh the cache of all the properties, not only the requested. 
+
+{{{
+print vm1.get_property('ip_address', from_cache=False)
+print vm1.get_properties(from_cache=False)
+}}}
+
+This is the list of all the properties you can request:
+  * name
+  * path
+  * guest_id
+  * guest_full_name
+  * hostname
+  * ip_address
+  * mac_address
+  * net
+
+====*Getting the resource pool name:*====
+To get the name of immediate resource pool where the VM belongs to, execute:
+
+{{{
+print vm1.get_resource_pool_name() #will print for example "Linux VMs"
+}}}
+
+====*Powering ON/OFF, Reseting, Suspending, etc:*====
 
 
 ==NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON==
