@@ -1,4 +1,4 @@
-= Quick guide to start using PySphere <g:plusone size="medium"></g:plusone> = 
+= Quick guide to start using PySphere = 
 
 == Installation ==
 
@@ -100,7 +100,7 @@ The are two main methods you can use to get a VM instance:
     # The value is on the "Virtual Machine Configuration File" field
   # *get_vm_by_name*: retrieve a virtual machine by its assigned name.
 
-It's recommended that you use the first method. It is faster and you won't have two VMs with the same path whereas you have two different VMs with the same name assigned in which case get_vm_by_name will return the first one to be found.
+It's recommended that you use the first method. It is faster and you won't have two VMs with the same path whereas you might have more than one VM with the same name assigned in which case get_vm_by_name will return the first one to be found.
 
 Example:
 
