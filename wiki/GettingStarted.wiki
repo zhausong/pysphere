@@ -49,11 +49,23 @@ Once you created your VIServer instance and got connected you are able to retrie
 
 === Getting the server type and vSphere API version ===
 
+To get Server Type
 {{{
-print server.get_server_type() #will print for example "VirtualCenter" or "VMWare Server"
-
-print server.get_api_version() #will print for example "4.1"
+print server.get_server_type() 
 }}}
+output could be something like
+{{{
+VMware vCenter Server
+}}}
+To Get API Version
+{{{
+print server.get_api_version() 
+}}}
+output could be something like
+{{{
+4.1
+}}}
+
 
 === Getting the server's registered VMs ===
 
