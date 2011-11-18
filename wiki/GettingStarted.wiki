@@ -210,7 +210,43 @@ To get the name of the immediate resource pool the VM belongs to, execute:
 print vm1.get_resource_pool_name() #will print for example "Linux VMs"
 }}}
 
-====*Powering ON/OFF, Reseting, Suspending, etc:*====
+===*Powering ON/OFF, Reset:*===
+
+To power on, reset, or power off a virtual machine you should call one of this methods:
+
+{{{
+vm1.power_on()
+vm1.reset()
+vm1.power_off()
+}}}
+
+By default all of them are executed synchronously, i.e, the method won't return until the operation requested has completed.
+
+If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later.
+
+{{{
+task1 = vm1.power_on(sync_run=False)
+task2 = vm2.reset(sync_run=False)
+task3 = vm3.power_off(sync_run=False)
+}}}
+
+Additionally, the power_on method supports an additional 'host' keyword argument you can supply to indicate in which host the VM should be powered on (e.g. If you are working with a Virtual Center with several ESX severs registered). If this argument is either invalid or not provided the current host association is used. 
+
+{{{
+vm1.power_on(host="esx3.company.com")
+}}}
+
+===*Guest operations: Shutdown, Reboot, and Stand By:*===
+
+Each of this three methods issues a command to the guest operating system asking it to prepare for a shutdown, reboot or suspend operation. Returns immediately and does not wait for the guest operating system to complete the operation (Requires the VM to be powered on and have the VMWare tools running)
+
+{{{
+vm1.shutdown_guest()
+vm1.reboot_guest()
+vm1.standby_guest()
+}}}
+
+===*Snapshots: Revert to, Create, and Delete:*===
 
 
 ==NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON==
