@@ -100,7 +100,7 @@ The are two main methods you can use to get a VM instance:
     # The value is on the "Virtual Machine Configuration File" field
   # *get_vm_by_name*: retrieve a virtual machine by its assigned name.
 
-You should try to use the first method. It is faster and you won't have two VMs with the same path while you might have two different VMs with the same name assigned in which case get_vm_by_name will return the first one to be found.
+It's recommended that you use the first method. It is faster and you won't have two VMs with the same path whereas you have two different VMs with the same name assigned in which case get_vm_by_name will return the first one to be found.
 
 Example:
 
@@ -140,10 +140,10 @@ will print one of these values (strings):
   * 'BLOCKED ON MSG'
   * 'REVERTING TO SNAPSHOT'
 
-The three first states are the basic ones. I.e. a virtual machine will  always be in one of those three, however by inspecting the list of queued tasks the other statuses can be implied. E.g. if a VM is powered off but a user has started a power on action, then the implied status will be 'POWERING ON'. The status 'BLOCKED ON MSG' means that VM can't be used until the user decides an action to be taken on that VM (one of the most common message triggered is "This virtual machine may have been moved or copied")
+The first three states are the basic ones. i.e. a virtual machine will always be in one of those three statuses, however by inspecting the list of queued tasks the other statuses can be implied. E.g. if a VM is powered off but a user has started a power on action, then the implied status will be 'POWERING ON'. The status 'BLOCKED ON MSG' means that VM can't be used until the user decides an action to be taken on that VM (one of the most common message triggered is "This virtual machine may have been moved or copied")
 
 Some products as "VMware Server" do not support querying the tasks history so you'll always get one of the first three statuses.
-Besides you can force pysphere to return one of the three basic statuses by providing the an extra keyword argument "basic_status" with 'True':
+Besides, you can force pysphere to return one of the three basic statuses by providing the extra keyword argument "basic_status" with 'True':
 
 {{{
 print vm1.get_status(basic_status=True)
@@ -186,7 +186,7 @@ might return:
 print vm1.get_property('mac_address') #prints '00:50:56:aa:01:a7'
 }}}
 
-For performance reasons, when pysphere creates the VM instance, all the properties are queried in a single request and cached. But some of them are volatile, their values might change, new properties can appear or an existing property might disappear. For example, to get the `ip_address` property the VM needs to have the VMWare tools installed and be powered on. To be sure the value you request is updated you might add the 'from_cache' keyword argument to `get_property` or `get_properties` with the value `False`. This will refresh the cache of all the properties, not only the requested. 
+Due to performance reasons, when pysphere creates the VM instance, all the properties are queried in a single request and cached. But some of them are volatile, their values might change, new properties can appear or an existing property might disappear. For example, to get the `ip_address` property the VM needs to have the VMWare tools installed and to be powered on. To be sure the value you request is updated you might add the 'from_cache' keyword argument to `get_property` or `get_properties` with the value `False`. This will refresh the cache of all the properties, not only the requested. 
 
 {{{
 print vm1.get_property('ip_address', from_cache=False)
@@ -204,7 +204,7 @@ This is the list of all the properties you can request:
   * net
 
 ====*Getting the resource pool name:*====
-To get the name of immediate resource pool where the VM belongs to, execute:
+To get the name of the immediate resource pool the VM belongs to, execute:
 
 {{{
 print vm1.get_resource_pool_name() #will print for example "Linux VMs"
