@@ -13,33 +13,34 @@ You can also find the source package and windows installer in the [http://code.g
 To install it from the windows executable just run the file and follow the wizard's instructions.
  
 To install it from the source package:
-  # Unzip the package
-  # run: `python setup.py install`
-
+{{{
+# unzip pysphere-0.1.0.zip
+# python setup.py install
+}}}
 == Connecting to a server ==
 
 PySphere can interact with ESX, ESXi, Virtual Center, Virtual Server, and it should work with any other VMWare product exposing the vSphere Web Services SDK.
 
 First you need to create a server instance from the `VIServer` class:
 {{{
-from pysphere import VIServer
-server = VIServer()
+>>> from pysphere import VIServer
+>>> server = VIServer()
 }}}
 
 Next, you must call the connect method and provide the server hostname or IP and the user credentials. E.g. For an ESX server on 192.168.100.100 with a registered user 'jdoe' with password 'secret':
 {{{
-server.connect("192.168.100.100", "jdoe", "secret")
+>>> server.connect("192.168.100.100", "jdoe", "secret")
 }}}
 
 By default, pysphere will look for the web service at VMWare's default URL which is `https://[SERVER]/sdk`.
 If your server is configured to use http instead of https or if it's serving on a different port, then you need to provide the connect method with the full URL instead of just the hostname or IP. For example:
 {{{
-server.connect("http://192.168.100.100:8080/sdk", "jdoe", "secret")
+>>> server.connect("http://192.168.100.100:8080/sdk", "jdoe", "secret")
 }}}
 
 For debugging you can also provide the keyword argument `trace_file` with a path to a file where the SOAP requests and responses generated during you session will be stored:
 {{{
-server.connect("192.168.100.100", "jdoe", "secret", trace_file="debug.txt")
+>>> server.connect("192.168.100.100", "jdoe", "secret", trace_file="debug.txt")
 }}}
 == Server properties and methods ==
 
@@ -51,18 +52,12 @@ Once you created your VIServer instance and got connected you are able to retrie
 
 To get Server Type
 {{{
-print server.get_server_type() 
-}}}
-output could be something like
-{{{
+>>> print server.get_server_type() 
 VMware vCenter Server
 }}}
-To Get API Version
+To get API Version
 {{{
-print server.get_api_version() 
-}}}
-output could be something like
-{{{
+>>> print server.get_api_version() 
 4.1
 }}}
 
@@ -72,7 +67,7 @@ output could be something like
 This method will return a list of strings with all the VM's .vmx file paths that are registered in the server. You can use them later to connect to those vms.
 
 {{{
-vmlist = server.get_registered_vms()
+>>> vmlist = server.get_registered_vms()
 }}}
 
 You may also use one or more filters through keyword arguments:
@@ -87,7 +82,7 @@ Note: if  cluster is set then datacenter is ignored and if resource pool is set 
 For example, to get all powered on VMs from the 'Windows XP' resource pool:
 
 {{{
-vmlist = server.get_registered_vms(resource_pool='Windows XP', status='poweredOn')
+>>> vmlist = server.get_registered_vms(resource_pool='Windows XP', status='poweredOn')
 }}}
 
 === Disconnecting from the server ===
@@ -97,7 +92,7 @@ Once you've finalized your program or script it's recommended to logout from the
 To disconnect from the server, just execute:
 
 {{{
-server.disconnect()
+>>> server.disconnect()
 }}}
 
 
@@ -117,19 +112,19 @@ It's recommended that you use the first method. It is faster and you won't have 
 Example:
 
 {{{
-from pysphere import VIServer
-server = VIServer()
-server.connect("192.168.100.100", "jdoe", "secret")
+>>> from pysphere import VIServer
+>>> server = VIServer()
+>>> server.connect("192.168.100.100", "jdoe", "secret")
 
-vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx")
-vm2 = server.get_vm_by_name("My Open BSD 4.5")
+>>> vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx")
+>>> vm2 = server.get_vm_by_name("My Open BSD 4.5")
 }}}
 
 both methods can receive an additional "datacenter" keyword argument that will limit the search within the specified datacenter:
 
 {{{
-vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx", "DEVELOPMENT")
-vm2 = server.get_vm_by_name("My Open BSD 4.5", "IT")
+>>> vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx", "DEVELOPMENT")
+>>> vm2 = server.get_vm_by_name("My Open BSD 4.5", "IT")
 }}}
 
 === Getting VM properties ===
@@ -138,7 +133,7 @@ vm2 = server.get_vm_by_name("My Open BSD 4.5", "IT")
 
 The following code
 {{{
-print vm1.get_status()
+>>> print vm1.get_status()
 }}}
 
 will print one of these values (strings):
@@ -158,20 +153,20 @@ Some products as "VMware Server" do not support querying the tasks history so yo
 Besides, you can force pysphere to return one of the three basic statuses by providing the extra keyword argument "basic_status" with 'True':
 
 {{{
-print vm1.get_status(basic_status=True)
+>>> print vm1.get_status(basic_status=True)
 }}}
 
 You might also ask if the VM is in a particular status (which will return True or False) by invoking these methods:
 {{{
-print vm1.is_powering_off()
-print vm1.is_powered_off()
-print vm1.is_powering_on()
-print vm1.is_powered_on()
-print vm1.is_suspending()
-print vm1.is_suspended()
-print vm1.is_resetting()
-print vm1.is_blocked_on_msg()
-print vm1.is_reverting()
+>>> print vm1.is_powering_off()
+>>> print vm1.is_powered_off()
+>>> print vm1.is_powering_on()
+>>> print vm1.is_powered_on()
+>>> print vm1.is_suspending()
+>>> print vm1.is_suspended()
+>>> print vm1.is_resetting()
+>>> print vm1.is_blocked_on_msg()
+>>> print vm1.is_reverting()
 }}}
 
 ====*Getting basic properties:*====
@@ -182,10 +177,7 @@ Pysphere provides two methods to get some basic properties from a VM in a simple
   * *get_property(property_name)*: retrieves the value of the requested property, or None if that property does not exist. E.g:
 
 {{{
-vm1.get_properties()
-}}}
-might return:
-{{{
+>>> vm1.get_properties()
 {'guest_id': 'ubuntuGuest',
  'path': '[DataStore1] Ubuntu/Ubuntu-10.vmx',
  'guest_full_name': 'Ubuntu Linux (32-bit)',
@@ -195,14 +187,15 @@ might return:
 }}}
 
 {{{
-print vm1.get_property('mac_address') #prints '00:50:56:aa:01:a7'
+>>> print vm1.get_property('mac_address') 
+'00:50:56:aa:01:a7'
 }}}
 
 Due to performance reasons, when pysphere creates the VM instance, all the properties are queried in a single request and cached. But some of them are volatile, their values might change, new properties can appear or an existing property might disappear. For example, to get the `ip_address` property the VM needs to have the VMWare tools installed and to be powered on. To be sure the value you request is updated you might add the 'from_cache' keyword argument to `get_property` or `get_properties` with the value `False`. This will refresh the cache of all the properties, not only the requested. 
 
 {{{
-print vm1.get_property('ip_address', from_cache=False)
-print vm1.get_properties(from_cache=False)
+>>> print vm1.get_property('ip_address', from_cache=False)
+>>> print vm1.get_properties(from_cache=False)
 }}}
 
 This is the list of all the properties you can request:
@@ -219,7 +212,8 @@ This is the list of all the properties you can request:
 To get the name of the immediate resource pool the VM belongs to, execute:
 
 {{{
-print vm1.get_resource_pool_name() #will print for example "Linux VMs"
+>>> print vm1.get_resource_pool_name() 
+Linux VMs
 }}}
 
 ===*Powering ON/OFF, Reset:*===
@@ -227,9 +221,9 @@ print vm1.get_resource_pool_name() #will print for example "Linux VMs"
 To power on, reset, or power off a virtual machine you should call one of this methods:
 
 {{{
-vm1.power_on()
-vm1.reset()
-vm1.power_off()
+>>> vm1.power_on()
+>>> vm1.reset()
+>>> vm1.power_off()
 }}}
 
 By default all of them are executed synchronously, i.e, the method won't return until the operation requested has completed.
@@ -237,15 +231,15 @@ By default all of them are executed synchronously, i.e, the method won't return 
 If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later.
 
 {{{
-task1 = vm1.power_on(sync_run=False)
-task2 = vm2.reset(sync_run=False)
-task3 = vm3.power_off(sync_run=False)
+>>> task1 = vm1.power_on(sync_run=False)
+>>> task2 = vm2.reset(sync_run=False)
+>>> task3 = vm3.power_off(sync_run=False)
 }}}
 
 Additionally, the power_on method supports an additional 'host' keyword argument you can supply to indicate in which host the VM should be powered on (e.g. If you are working with a Virtual Center with several ESX severs registered). If this argument is either invalid or not provided the current host association is used. 
 
 {{{
-vm1.power_on(host="esx3.company.com")
+>>> vm1.power_on(host="esx3.example.com")
 }}}
 
 ===*Guest operations: Shutdown, Reboot, and Stand By:*===
@@ -253,12 +247,12 @@ vm1.power_on(host="esx3.company.com")
 Each of this three methods issues a command to the guest operating system asking it to prepare for a shutdown, reboot or suspend operation. Returns immediately and does not wait for the guest operating system to complete the operation (Requires the VM to be powered on and have the VMWare tools running)
 
 {{{
-vm1.shutdown_guest()
-vm1.reboot_guest()
-vm1.standby_guest()
+>>> vm1.shutdown_guest()
+>>> vm1.reboot_guest()
+>>> vm1.standby_guest()
 }}}
 
 ===*Snapshots: Revert to, Create, and Delete:*===
 
 
-==NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON==
+===NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON===
