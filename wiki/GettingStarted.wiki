@@ -254,6 +254,8 @@ Each of this three methods issues a command to the guest operating system asking
 
 ===*Snapshots: Revert to, Create, and Delete:*===
 
+====*Revert to snapshot*====
+
 There are three methods you can use to revert a virtual machine to a snapshot:
   * *revert_to_snapshot*: reverts to the current snapshot.
   * *revert_to_named_snapshot*: reverts to the first snapshot matching the given name.
@@ -289,6 +291,62 @@ Besides, as with the "power_on" method, there's an additional 'host' keyword arg
 >>> vm1.revert_to_snapshot(host="esx1.example.com")
 >>> vm1.revert_to_named_snapshot(host="esx2.example.com")
 >>> vm1.revert_to_path(host="esx3.example.com")
+}}}
+
+====*Delete snapshots*====
+
+As with `revert_to_*` methods, there are also three analogical methods to remove an snapshot: the current snapshot, by name, and by path:
+
+  * *delete_current_snapshot*
+  * *delete_named_snapshot(name)*
+  * *delete_snapshot_by_path(path, index=0)*
+
+E.g.:
+
+{{{
+>>> vm1.delete_current_snapshot()
+>>> vm1.delete_named_snapshot("base")
+>>> vm1.delete_snapshot_by_path("/base2/foo")
+}}}
+
+In the case of *delete_snapshot_by_path* you can provide the "index" keyword argument to disambiguate among snapshots with the same path (defaults to 0).
+
+The three methods have a "remove_children" keyword argument that defaults to False, setting it to True will delete not only the snapshot specified but also all its descendants.
+
+E.g.:
+
+{{{
+>>> vm1.delete_current_snapshot(remove_children=True)
+>>> vm1.delete_named_snapshot("base", remove_children=True)
+>>> vm1.delete_snapshot_by_path("/base2/foo", remove_children=True)
+}}}
+
+The delete operation is also executed synchronously, just add the `run_sync=False` keyword argument to execute it asynchronously and get the task object. E.g.:
+
+{{{
+>>> task1 = vm1.delete_current_snapshot(sync_run=False)
+>>> task2 = vm1.delete_named_snapshot("base", sync_run=False)
+>>> task3 = vm1.delete_snapshot_by_path("/base2/foo", sync_run=False)
+}}}
+
+====*Create snapshot*====
+
+To take a snapshot with the current state of the VM, run:
+
+{{{
+>>> vm1.create_snapshot("mysnapshot")
+}}}
+
+You can also provide a snapshot description via the "description" keyword argument:
+
+{{{
+>>> vm1.create_snapshot("mysnapshot", description="With SP2 installed")
+}}}
+
+The create operation is also execute synchronously, so you won't get the control back until the snapshot has been created, to execute it asynchronously and get the task object just add the `run_sync=False` keyword argument E.g.:
+
+{{{
+>>> task1 = vm1.create_snapshot("mysnapshot", sync_run=False)
 }}}
 
 ===NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON===
