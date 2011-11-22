@@ -13,10 +13,10 @@ You can also find the source package and windows installer in the [http://code.g
 To install it from the windows executable just run the file and follow the wizard's instructions.
  
 To install it from the source package:
-{{{
-# unzip pysphere-0.1.0.zip
-# python setup.py install
-}}}
+
+  # unzip pysphere-0.1.0.zip
+  # python setup.py install
+
 == Connecting to a server ==
 
 PySphere can interact with ESX, ESXi, Virtual Center, Virtual Server, and it should work with any other VMWare product exposing the vSphere Web Services SDK.
@@ -273,7 +273,7 @@ The "revert_to_path" method also accepts an "index" keyword argument which defau
 >>> vm1.revert_to_path("/base/updated", index=1) #reverts to the second "updated" snapshot withing the "base" snapshot node
 }}}
 
-As with the "power_on", "power_off", "reset" methods (see [GettingStarted#Powering_ON/OFF,_Reset Powering ON/OFF, Reset]) the revert operations are executed synchronously, i.e, the method won't return until the operation requested has completed.
+As with the "power_on", "power_off", "reset" methods (see [GettingStarted#Powering_ON/OFF,_Reset: Powering ON/OFF, Reset]) the revert operations are executed synchronously, i.e, the method won't return until the operation requested has completed.
 
 If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later.
 
