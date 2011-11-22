@@ -254,5 +254,41 @@ Each of this three methods issues a command to the guest operating system asking
 
 ===*Snapshots: Revert to, Create, and Delete:*===
 
+There are three methods you can use to revert a virtual machine to a snapshot:
+  * *revert_to_snapshot*: reverts to the current snapshot.
+  * *revert_to_named_snapshot*: reverts to the first snapshot matching the given name.
+  * *revert_to_path*: reverts to the snapshot matching the snapshots path and index (to disambiguate among snapshots with the same name). 
+
+For example:
+
+{{{
+>>> vm1.revert_to_snapshot() #reverts to the current snapshot
+>>> vm1.revert_to_named_snapshot("base") #reverts to the "base" snapshot
+>>> vm1.revert_to_path("/base/updated") #reverts to the "updated" snapshot which is a child of snapshot "base"
+}}}
+
+The "revert_to_path" method also accepts an "index" keyword argument which defaults to 0. If you have two or more snapshots with the exact same path you can use this argument to disambiguate among them. E.g.:
+
+{{{
+>>> vm1.revert_to_path("/base/updated", index=1) #reverts to the second "updated" snapshot withing the "base" snapshot node
+}}}
+
+As with the "power_on", "power_off", "reset" methods (see [GettingStarted#Powering_ON/OFF,_Reset Powering ON/OFF, Reset]) the revert operations are executed synchronously, i.e, the method won't return until the operation requested has completed.
+
+If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later.
+
+{{{
+>>> task1 = vm1.revert_to_snapshot(sync_run=False)
+>>> task2 = vm2.revert_to_named_snapshot("base", sync_run=False)
+>>> task3 = vm3.revert_to_path("/base/updated", sync_run=False)
+}}}
+
+Besides, as with the "power_on" method, there's an additional 'host' keyword argument you can supply to indicate in which host the VM should be reverted (e.g. If you are working with a Virtual Center with several ESX severs registered). If this argument is either invalid or not provided the current host association is used. 
+
+{{{
+>>> vm1.revert_to_snapshot(host="esx1.example.com")
+>>> vm1.revert_to_named_snapshot(host="esx2.example.com")
+>>> vm1.revert_to_path(host="esx3.example.com")
+}}}
 
 ===NOTE: THIS DOCUMENTATION IS UNDER DEVELOPMENT. SO IF YOU HAVEN'T FOUND WHAT YOU ARE LOOKING FOR PLEASE COME BACK SOON===
