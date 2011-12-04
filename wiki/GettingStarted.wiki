@@ -218,7 +218,7 @@ Linux VMs
 
 ===*Powering ON/OFF, Reset:*===
 
-To power on, reset, or power off a virtual machine you should call one of this methods:
+To power on, reset, or power off a virtual machine you should call one of these methods:
 
 {{{
 >>> vm1.power_on()
@@ -226,9 +226,9 @@ To power on, reset, or power off a virtual machine you should call one of this m
 >>> vm1.power_off()
 }}}
 
-By default all of them are executed synchronously, i.e, the method won't return until the operation requested has completed.
+By default all of them are executed synchronously, i.e, the method won't return until the requested operation has completed.
 
-If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]).
+If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case, the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]).
 
 {{{
 >>> task1 = vm1.power_on(sync_run=False)
@@ -244,7 +244,7 @@ Additionally, the power_on method supports an additional 'host' keyword argument
 
 ===*Guest operations: Shutdown, Reboot, and Stand By:*===
 
-Each of this three methods issues a command to the guest operating system asking it to prepare for a shutdown, reboot or suspend operation. Returns immediately and does not wait for the guest operating system to complete the operation (Requires the VM to be powered on and have the VMWare tools running)
+Each of these three methods issues a command to the guest operating system asking it to prepare for a shutdown, reboot or suspend operation, and returns immediately not waiting for the guest operating system to complete the operation (Requires the VM to be powered on and have the VMWare tools running)
 
 {{{
 >>> vm1.shutdown_guest()
@@ -275,9 +275,9 @@ The "revert_to_path" method also accepts an "index" keyword argument which defau
 >>> vm1.revert_to_path("/base/updated", index=1) #reverts to the second "updated" snapshot withing the "base" snapshot node
 }}}
 
-As with the "power_on", "power_off", "reset" methods (see [GettingStarted#Powering_ON/OFF,_Reset: Powering ON/OFF, Reset]) the revert operations are executed synchronously, i.e, the method won't return until the operation requested has completed.
+As with the "power_on", "power_off", "reset" methods (see [GettingStarted#Powering_ON/OFF,_Reset: Powering ON/OFF, Reset]) the revert operations are executed synchronously, i.e, the method won't return until the requested operation has completed.
 
-If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]).
+If you want to execute those operations asynchronously, you must provide the keyword argument `sync_run=False`. In that case, the method will return a task object which you can use to query the task progress and result. The methods and attributes of this task object will be explained later (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]).
 
 {{{
 >>> task1 = vm1.revert_to_snapshot(sync_run=False)
@@ -295,7 +295,7 @@ Besides, as with the "power_on" method, there's an additional 'host' keyword arg
 
 ====*Delete snapshots*====
 
-As with `revert_to_*` methods, there are also three analogical methods to remove an snapshot: the current snapshot, by name, and by path:
+As with `revert_to_*` methods, there are also three analogical methods to remove a snapshot: the current snapshot, by name, and by path:
 
   * *delete_current_snapshot*
   * *delete_named_snapshot(name)*
@@ -311,7 +311,7 @@ E.g.:
 
 In the case of *delete_snapshot_by_path* you can provide the "index" keyword argument to disambiguate among snapshots with the same path (defaults to 0).
 
-The three methods have a "remove_children" keyword argument that defaults to False, setting it to True will delete not only the snapshot specified but also all its descendants.
+The three methods have a "remove_children" keyword argument that defaults to False, setting it to True will delete not only the specified snapshot but also all of its descendants.
 
 E.g.:
 
@@ -343,7 +343,7 @@ You can also provide a snapshot description via the "description" keyword argume
 >>> vm1.create_snapshot("mysnapshot", description="With SP2 installed")
 }}}
 
-The create operation is also execute synchronously, so you won't get the control back until the snapshot has been created, to execute it asynchronously and get the task object just add the `run_sync=False` keyword argument (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]). E.g.:
+The create operation is also executed synchronously, so you won't get the control back until the snapshot has been created, to execute it asynchronously and get the task object just add the `run_sync=False` keyword argument (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]). E.g.:
 
 {{{
 >>> task1 = vm1.create_snapshot("mysnapshot", sync_run=False)
@@ -429,14 +429,14 @@ When invoking the method with `sync_run=False`, a `VITask` object will be return
 >>> task = vm1.power_on(sync_run=False)
 }}}
 
-this `VITask` object have the following methods:
+this `VITask` object has the following methods:
   * *get_state*: Return the current status of the task. Possible values are:
    * `"error"`: The task finished but not successfully.
    * `"queued"`: The task is still queued and waiting to be executed.
    * `"running"`: The task is being run.
    * `"success"`: The task finished and was successfully executed.
   * *get_error_message*: If the task status is 'error', returns the error description message.
-  * *wait_for_state*: receives a list of statuses and waits at most the indicated time (or indefinitely if a timeout is not provided) until one of the given statuses are reached. Returns the reached status or raises a VIException if times out.
+  * *wait_for_state*: receives a list of statuses and waits the indicated time at the most (or indefinitely if a timeout is not provided) until one of the given statuses is reached. Returns the reached status or raises a VIException if it times out.
 Example:
 {{{
 >>> task = vm1.power_on(sync_run=False)
