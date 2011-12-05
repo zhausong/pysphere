@@ -12,12 +12,15 @@
       * [GettingStarted#Getting_basic_properties: Getting basic properties]
       * [GettingStarted#Getting_the_resource_pool_name: Getting the resource pool name]
     * [GettingStarted#Power_ON/OFF,_Suspend,_Reset Power ON/OFF, Suspend, Reset]
-    * [GettingStarted#Guest_power_operations:_Shutdown,_Reboot,_and Stand_By Guest power operations: Shutdown, Reboot, and Stand By]
     * [GettingStarted#Snapshots:_Revert_to,_Create,_and_Delete Snapshots]
       * [GettingStarted#Revert_to_snapshot Revert to snapshot]
       * [GettingStarted#Delete_snapshots Delete snapshots]
       * [GettingStarted#Create_snapshot Create snapshot]
       * [GettingStarted#List_snapshots List snapshots]
+    * [GettingStarted#Guest_power_operations:_Shutdown,_Reboot,_and Stand_By Guest power operations: Shutdown, Reboot, and Stand By]
+    * [GettingStarted#Other_guest_operations:_Files_and_processes Other guest operations: Files and processes]
+      * [GettingStarted#Files_and_Directories Files and Directories]
+      * [GettingStarted#Processes_and_environment_variables Processes and environment variables]
     * [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]
 
     
