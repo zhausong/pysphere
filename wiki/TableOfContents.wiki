@@ -1,0 +1,24 @@
+===*Table Of Contents*===
+
+  * [GettingStarted#Installation Installation]
+  * [GettingStarted#Connecting_to_a_server Connecting to a server]
+  * [GettingStarted#Server_properties_and_methods Server properties and methods]
+    * [GettingStarted#Getting_the_server_type_and_vSphere_API_version Getting the server type and vSphere API version]
+    * [GettingStarted#Getting_the_server's_registered_VMs Getting the server's registered VMs]
+    * [GettingStarted#Disconnecting_from_the_server Disconnecting from the server]
+  * [GettingStarted#Working_with_virtual_machines Working with virtual machines]
+    * [GettingStarted#Getting_VM_properties Getting VM properties]
+      * [GettingStarted#Virtual_Machine_Status: Virtual Machine Status]
+      * [GettingStarted#Getting_basic_properties: Getting basic properties]
+      * [GettingStarted#Getting_the_resource_pool_name: Getting the resource pool name]
+    * [GettingStarted#Power_ON/OFF,_Suspend,_Reset Power ON/OFF, Suspend, Reset]
+    * [GettingStarted#Guest_power_operations:_Shutdown,_Reboot,_and Stand_By Guest power operations: Shutdown, Reboot, and Stand By]
+    * [GettingStarted#Snapshots:_Revert_to,_Create,_and_Delete Snapshots]
+      * [GettingStarted#Revert_to_snapshot Revert to snapshot]
+      * [GettingStarted#Delete_snapshots Delete snapshots]
+      * [GettingStarted#Create_snapshot Create snapshot]
+      * [GettingStarted#List_snapshots List snapshots]
+    * [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]
+
+    
+  
