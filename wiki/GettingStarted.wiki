@@ -461,7 +461,7 @@ A few examples:
 }}}
 
 
-====*Files and Directories*====
+====*Processes and environment variables*====
 
 
 
