@@ -216,13 +216,14 @@ To get the name of the immediate resource pool the VM belongs to, execute:
 Linux VMs
 }}}
 
-===*Powering ON/OFF, Reset:*===
+===*Power ON/OFF, Suspend, Reset*===
 
-To power on, reset, or power off a virtual machine you should call one of these methods:
+To power on, power off, suspend, or reset a virtual machine you should call one of these methods:
 
 {{{
 >>> vm1.power_on()
 >>> vm1.reset()
+>>> vm1.suspend() #since pysphere 0.1.5
 >>> vm1.power_off()
 }}}
 
@@ -233,7 +234,8 @@ If you want to execute those operations asynchronously, you must provide the key
 {{{
 >>> task1 = vm1.power_on(sync_run=False)
 >>> task2 = vm2.reset(sync_run=False)
->>> task3 = vm3.power_off(sync_run=False)
+>>> task3 = vm2.suspend(sync_run=False) #since pysphere 0.1.5
+>>> task4 = vm3.power_off(sync_run=False)
 }}}
 
 Additionally, the power_on method supports an additional 'host' keyword argument you can supply to indicate in which host the VM should be powered on (e.g. If you are working with a Virtual Center with several ESX severs registered). If this argument is either invalid or not provided the current host association is used. 
@@ -242,17 +244,7 @@ Additionally, the power_on method supports an additional 'host' keyword argument
 >>> vm1.power_on(host="esx3.example.com")
 }}}
 
-===*Guest operations: Shutdown, Reboot, and Stand By:*===
-
-Each of these three methods issues a command to the guest operating system asking it to prepare for a shutdown, reboot or suspend operation, and returns immediately not waiting for the guest operating system to complete the operation (Requires the VM to be powered on and have the VMWare tools running)
-
-{{{
->>> vm1.shutdown_guest()
->>> vm1.reboot_guest()
->>> vm1.standby_guest()
-}}}
-
-===*Snapshots: Revert to, Create, and Delete:*===
+===*Snapshots: Revert to, Create, and Delete*===
 
 ====*Revert to snapshot*====
 
@@ -407,6 +399,73 @@ Children: []
 """
 }}}
 
+===*Guest power operations: Shutdown, Reboot, and Stand By*===
+
+Each of these three methods issues a command to the guest operating system asking it to prepare for a shutdown, reboot or suspend operation, and returns immediately not waiting for the guest operating system to complete the operation (Requires the VM to be powered on and have the VMWare tools running)
+
+{{{
+>>> vm1.shutdown_guest()
+>>> vm1.reboot_guest()
+>>> vm1.standby_guest()
+}}}
+
+Notice that these methods in contrast to their equivalents `power_off`, `reset`, and `suspend` introduced before (see [GettingStarted#Power_ON/OFF,_Suspend,_Reset Power ON/OFF, Suspend, Reset]) don't work on a "hard" level but on a guest OS level, i.e. shutdown_guest will attempt to perform a clean exit on the system while power_off is practically equivalent to unplug the power cord on a physical machine.
+
+
+===*Other guest operations: Files and processes*=== 
+_*since pysphere 0.1.5*_
+
+The following methods work on servers implementing vSphere 5.0 or later.
+They allow you to perform operations with the guest OS. So you'll need the vmware tools to be running on the system.
+
+Before executing any these guest operations you'll need to login in the guest OS:
+
+{{{
+>>> vm1.login_in_guest("os_username", "os_password")
+}}}
+
+If you don't get any exception then the login was successful.
+
+====*Files and Directories*====
+  * *make_directory(self, path, create_parents=True)*: Creates a directory in the guest OS specified by `path`, if `create_parents` is `True` (default) all the directory components in the path are created if they don't exist.
+  * *move_directory(self, src_path, dst_path)*: Moves or renames a directory in the guest system from `src_path` to `dst_path`.
+  * *delete_directory(self, path, recursive)*: Deletes the directory specified by `path` in the guest OS. If `recursive` is `True` all subdirectories and files are also deleted, else the operation will fail if the directory is not empty.
+  * *list_files(self, path, match_pattern=None)*: Returns information about files or directories from the guest system. `path` is the complete path to the directory or file to query. `match_pattern` is a filter for the return values specified as a perl-compatible regular expression (if not provided then '.*' is used). The method returns a list of dictionaries with these keys:
+    * path: The complete path to the file 
+    * size: The file size in bytes 
+    * type: either 'directory', 'file', or 'symlink'
+  * *get_file(self, guest_path, local_path, overwrite=False)*: Downloads a file from the guest to the system running pysphere.
+  * *send_file(self, local_path, guest_path, overwrite=False)*: Uploads a file from the system running pysphere to the guest system.
+  * *move_file(self, src_path, dst_path, overwrite=False)*: Renames a file in the guest system from `src_path` to `dst_path`. If `overwrite` is `False` (default) and `dst_path` already exists the method fails, while if `overwrite` is set to `True` clobbers any existing file.
+  * *delete_file(self, path)*: Deletes the file specified by `path` from the guest system.
+
+A few examples:
+
+{{{
+>>> vm1.login_in_guest("root", "secret")
+>>>
+>>> vm1.send_file("/home/seba/netcat.exe", r"c:\netcat.exe")
+>>>
+>>> vm1.make_directory(r"c:\my\binary\tools")
+>>>
+>>> vm1.move_file(r"c:\netcat.exe", r"c:\my\binary\tools\nc.exe")
+>>>
+>>> for f in vm1.list_files(r"c:\my\binary\tools"):
+...   print "'%s' is a %s of %s bytes." % (f['path'], f['type'], f['size'])
+
+'.' is a direcotory of None bytes.
+'..' is a directory of None bytes.
+'nc.exe' is a file of 1258291 bytes.
+>>>
+>>> vm1.delete_directory(r"c:\my", True)
+}}}
+
+
+====*Files and Directories*====
+
+
+
+
 ===*Running Tasks Asynchronously*===
 
 As mentioned before, there are many methods of a virtual machine that execute synchronously by default (i.e. you don't get the flow control back until the operation has completed) but support asynchronous execution by providing the keyword argument `sync_run=False`.
@@ -414,6 +473,7 @@ As mentioned before, there are many methods of a virtual machine that execute sy
 This is a list of the virtual machine methods which support this argument:
   * power_on
   * reset
+  * suspend
   * power_off
   * revert_to_snapshot
   * revert_to_named_snapshot
