@@ -117,14 +117,14 @@ Example:
 >>> server.connect("192.168.100.100", "jdoe", "secret")
 
 >>> vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx")
->>> vm2 = server.get_vm_by_name("My Open BSD 4.5")
+>>> vm2 = server.get_vm_by_name("Windows XP Professional")
 }}}
 
 both methods can receive an additional "datacenter" keyword argument that will limit the search within the specified datacenter:
 
 {{{
 >>> vm1 = server.get_vm_by_path("[DataStore1] Ubuntu/Ubuntu-10.vmx", "DEVELOPMENT")
->>> vm2 = server.get_vm_by_name("My Open BSD 4.5", "IT")
+>>> vm2 = server.get_vm_by_name("Windows XP Professional", "IT")
 }}}
 
 === Getting VM properties ===
@@ -264,7 +264,7 @@ For example:
 The "revert_to_path" method also accepts an "index" keyword argument which defaults to 0. If you have two or more snapshots with the exact same path you can use this argument to disambiguate among them. E.g.:
 
 {{{
->>> vm1.revert_to_path("/base/updated", index=1) #reverts to the second "updated" snapshot withing the "base" snapshot node
+>>> vm1.revert_to_path("/base/updated", index=1) #reverts to the 2nd "updated" snapshot withing the "base" snapshot node
 }}}
 
 As with the "power_on", "power_off", "reset" methods (see [GettingStarted#Powering_ON/OFF,_Reset: Powering ON/OFF, Reset]) the revert operations are executed synchronously, i.e, the method won't return until the requested operation has completed.
@@ -301,7 +301,7 @@ E.g.:
 >>> vm1.delete_snapshot_by_path("/base2/foo")
 }}}
 
-In the case of *delete_snapshot_by_path* you can provide the "index" keyword argument to disambiguate among snapshots with the same path (defaults to 0).
+In the case of `delete_snapshot_by_path` you can provide the "index" keyword argument to disambiguate among snapshots with the same path (defaults to 0).
 
 The three methods have a "remove_children" keyword argument that defaults to False, setting it to True will delete not only the specified snapshot but also all of its descendants.
 
@@ -346,7 +346,7 @@ The create operation is also executed synchronously, so you won't get the contro
 By calling the following method:
 
 {{{
->>> snapshot_list = vm1.get_snapshots()
+>>> snapshot_list = vm2.get_snapshots()
 }}}
 
 You'll get a list of `VISnapthot` objects, each of which support the following methods:
@@ -427,44 +427,118 @@ Before executing any these guest operations you'll need to login in the guest OS
 If you don't get any exception then the login was successful.
 
 ====*Files and Directories*====
-  * *make_directory(self, path, create_parents=True)*: Creates a directory in the guest OS specified by `path`, if `create_parents` is `True` (default) all the directory components in the path are created if they don't exist.
-  * *move_directory(self, src_path, dst_path)*: Moves or renames a directory in the guest system from `src_path` to `dst_path`.
-  * *delete_directory(self, path, recursive)*: Deletes the directory specified by `path` in the guest OS. If `recursive` is `True` all subdirectories and files are also deleted, else the operation will fail if the directory is not empty.
-  * *list_files(self, path, match_pattern=None)*: Returns information about files or directories from the guest system. `path` is the complete path to the directory or file to query. `match_pattern` is a filter for the return values specified as a perl-compatible regular expression (if not provided then '.*' is used). The method returns a list of dictionaries with these keys:
+
+Once you have successfully executed `login_in_guest` you are ready to perform files and directories operations on the guest system:
+
+  * *make_directory(path, create_parents=True)*: Creates a directory in the guest OS specified by `path`, if `create_parents` is `True` (default) all the directory components in the path are created if they don't exist.
+  * *move_directory(src_path, dst_path)*: Moves or renames a directory in the guest system from `src_path` to `dst_path`.
+  * *delete_directory(path, recursive)*: Deletes the directory specified by `path` in the guest OS. If `recursive` is `True` all subdirectories and files are also deleted, else the operation will fail if the directory is not empty.
+  * *list_files(path, match_pattern=None)*: Returns information about files or directories from the guest system. `path` is the complete path to the directory or file to query. `match_pattern` is a filter for the return values specified as a perl-compatible regular expression (if not provided then '.*' is used). The method returns a list of dictionaries with these keys:
     * path: The complete path to the file 
     * size: The file size in bytes 
     * type: either 'directory', 'file', or 'symlink'
-  * *get_file(self, guest_path, local_path, overwrite=False)*: Downloads a file from the guest to the system running pysphere.
-  * *send_file(self, local_path, guest_path, overwrite=False)*: Uploads a file from the system running pysphere to the guest system.
-  * *move_file(self, src_path, dst_path, overwrite=False)*: Renames a file in the guest system from `src_path` to `dst_path`. If `overwrite` is `False` (default) and `dst_path` already exists the method fails, while if `overwrite` is set to `True` clobbers any existing file.
-  * *delete_file(self, path)*: Deletes the file specified by `path` from the guest system.
+  * *get_file(guest_path, local_path, overwrite=False)*: Downloads a file from the guest to the system running pysphere.
+  * *send_file(local_path, guest_path, overwrite=False)*: Uploads a file from the system running pysphere to the guest system.
+  * *move_file(src_path, dst_path, overwrite=False)*: Renames a file in the guest system from `src_path` to `dst_path`. If `overwrite` is `False` (default) and `dst_path` already exists the method fails, while if `overwrite` is set to `True` clobbers any existing file.
+  * *delete_file(path)*: Deletes the file specified by `path` from the guest system.
 
 A few examples:
 
 {{{
->>> vm1.login_in_guest("root", "secret")
+>>> vm2.login_in_guest("admin", "secret")
 >>>
->>> vm1.send_file("/home/seba/netcat.exe", r"c:\netcat.exe")
+>>> vm2.send_file("/home/seba/netcat.exe", r"c:\netcat.exe")
 >>>
->>> vm1.make_directory(r"c:\my\binary\tools")
+>>> vm2.make_directory(r"c:\my\binary\tools")
 >>>
->>> vm1.move_file(r"c:\netcat.exe", r"c:\my\binary\tools\nc.exe")
+>>> vm2.move_file(r"c:\netcat.exe", r"c:\my\binary\tools\nc.exe")
 >>>
->>> for f in vm1.list_files(r"c:\my\binary\tools"):
+>>> for f in vm2.list_files(r"c:\my\binary\tools"):
 ...   print "'%s' is a %s of %s bytes." % (f['path'], f['type'], f['size'])
 
 '.' is a direcotory of None bytes.
 '..' is a directory of None bytes.
 'nc.exe' is a file of 1258291 bytes.
 >>>
->>> vm1.delete_directory(r"c:\my", True)
+>>> vm2.delete_directory(r"c:\my", True)
 }}}
 
 
 ====*Processes and environment variables*====
 
+Once you have successfully executed `login_in_guest` you are ready to perform processes operations on the guest system:
 
+  * *start_process(program_path, args=None, env=None, cwd=None)*: Starts a program in the guest operating system and returns the process identifier (PID). You need to specify `program_path` which is the absolute path to the program to be executed. Optionally you might set:
+    * `args`: a list of strings with the arguments to the program.
+    * `env`: a dictionary with string keys an values defining the environment variables to be set for the program.
+    * `cwd`:The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory. If this value is unset or is an empty string, the behavior depends on the guest operating system (for Linux guest operating systems the working directory will be the home directory of the user associated with the guest authentication, for other guest operating the behavior is unspecified).
+  * *terminate_process(pid)*: Terminates a process identified by `pid` in the guest OS.
+  * *list_processes()*: List the processes running in the guest operating system, plus those started by `start_process` that have recently completed. The list contains dicctionary objects with these keys:
+    * `start_time`: a datetime tuple with the process creation time.
+    * `end_time`: if the process was started using `start_process` then the process completion time will be available if queried within 5 minutes after it completes (a datetime tuple), returns `None` otherwise.
+    * `pid`: the process id.
+    * `name`: the process name.
+    * `cmd_line`: the full command line.
+    * `owner`: the process owner 
+    * `exit_code`: if the process was started using `start_process` then the process exit code will be available if queried within 5 minutes after it completes, otherwise it will be `None`.
+  * *get_environment_variables()*: Reads the environment variables from the guest OS (system user). Returns a dictionary with var names as keys and var values as their corresponding dictionary values.
 
+A few examples:
+
+{{{
+>>> vm2.login_in_guest("admin", "secret")
+>>>
+>>> vm2.list_processes()
+[{'cmd_line': 'C:\\WINDOWS\\system32\\services.exe',
+  'end_time': None,
+  'exit_code': None,
+  'name': 'services.exe',
+  'owner': 'NT AUTHORITY\\SYSTEM',
+  'pid': 612,
+  'start_time': (2011, 12, 6, 15, 26, 22, 0, 0, 0)},
+ {'cmd_line': '"C:\\Program Files\\VMware\\VMware Tools\\vmacthlp.exe"',
+  'end_time': None,
+  'exit_code': None,
+  'name': 'vmacthlp.exe',
+  'owner': 'NT AUTHORITY\\SYSTEM',
+  'pid': 800,
+  'start_time': (2011, 12, 6, 15, 26, 24, 0, 0, 0)},
+ {'cmd_line': 'C:\\WINDOWS\\system32\\svchost -k DcomLaunch',
+  'end_time': None,
+  'exit_code': None,
+  'name': 'svchost',
+  'owner': 'NT AUTHORITY\\SYSTEM',
+  'pid': 812,
+  'start_time': (2011, 12, 6, 15, 26, 25, 0, 0, 0)}
+  ...
+  ...
+]
+>>> pid = vm2.start_process("notepad.exe", args=["test.txt"], cwd="c:\\")
+>>> print pid
+1680
+>>>
+>>> vm2.terminate_process(1680)
+>>> 
+>>> vm2.get_environment_variables()
+{'ALLUSERSPROFILE': 'C:\Documents and Settings\All Users',
+ 'COMPUTERNAME': '24377799E194466',
+ 'CommonProgramFiles': 'C:\Program Files\Common Files',
+ 'NUMBER_OF_PROCESSORS': '1',
+ 'OS': 'Windows_NT',
+ 'PATHEXT': '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH',
+ 'PROCESSOR_ARCHITECTURE': 'x86',
+ 'Path': 'C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem',
+ 'ProgramFiles': 'C:\Program Files',
+ 'SystemDrive': 'C:',
+ 'SystemRoot': 'C:\WINDOWS',
+ 'TEMP': 'C:\DOCUME~1\admin\LOCALS~1\Temp',
+ 'TMP': 'C:\DOCUME~1\admin\LOCALS~1\Temp',
+ 'USERDOMAIN': '24378797F195962',
+ 'USERNAME': 'admin',
+ 'USERPROFILE': 'C:\Documents and Settings\admin',
+ 'windir': 'C:\WINDOWS'}
+>>>
+}}}
 
 ===*Running Tasks Asynchronously*===
 
