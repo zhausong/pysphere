@@ -10,13 +10,17 @@ The simplest way to install it is using  [http://pypi.python.org/pypi/setuptools
 
 `easy_install pysphere`
 
+Or using [http://pypi.python.org/pypi/pip pip]:
+
+`pip install -U pysphere`
+
 You can also find the source package and windows installer in the [http://code.google.com/p/pysphere/downloads/list downloads section].
 
 To install it from the windows executable just run the file and follow the wizard's instructions.
  
 To install it from the source package:
 
-  # unzip pysphere-0.1.0.zip
+  # unzip pysphere-0.1.5.zip
   # python setup.py install
 
 == Connecting to a server ==
