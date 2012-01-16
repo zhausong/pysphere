@@ -8,7 +8,7 @@ PySphere is platform independent and works with python 2.5, 2.6, and 2.7.
 
 The simplest way to install it is using  [http://pypi.python.org/pypi/setuptools setuptools]' easy_install:
 
-`easy_install pysphere`
+`easy_install -U pysphere`
 
 Or using [http://pypi.python.org/pypi/pip pip]:
 
