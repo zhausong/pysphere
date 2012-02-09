@@ -21,6 +21,8 @@
     * [GettingStarted#Other_guest_operations:_Files_and_processes Other guest operations: Files and processes]
       * [GettingStarted#Files_and_Directories Files and Directories]
       * [GettingStarted#Processes_and_environment_variables Processes and environment variables]
+    * [GettingStarted#Cloning_a_Virtual_Machine Cloning a Virtual Machine]
+    * [GettingStarted#Migrating_a_Virtual_Machine Migrating a Virtual Machine]
     * [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]
 
     
