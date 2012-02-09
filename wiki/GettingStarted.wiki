@@ -347,6 +347,19 @@ The create operation is also executed synchronously, so you won't get the contro
 >>> task1 = vm1.create_snapshot("mysnapshot", sync_run=False)
 }}}
 
+_since pysphere 0.1.6_
+
+In pysphere-0.1.6 optional keyword arguments were added to this method:
+
+  * *memory*: If True (default), a dump of the internal state of the virtual machine (basically a memory dump) is included in the snapshot. Memory snapshots consume time and resources, and thus take longer to create. When set to False, the power state of the snapshot is set to powered off.
+  * *quiesce*: If True (default) and the virtual machine is powered on when the snapshot is taken, VMware Tools is used to quiesce the file system in the virtual machine. This assures that a disk snapshot represents a consistent state of the guest file systems. If the virtual machine is powered off or VMware Tools are not available, the quiesce flag is ignored.
+
+E.g:
+
+{{{
+>>> vm1.create_snapshot("fastsnapshot", memory=False, quiesce=False)
+}}}
+
 ====*List snapshots*====
 
 By calling the following method:
@@ -546,6 +559,43 @@ A few examples:
 >>>
 }}}
 
+===*Cloning a Virtual Machine*=== 
+_*since pysphere 0.1.6*_
+
+To clone a virtual machine (only available for Virtual Center servers):
+
+{{{
+>>> new_vm = vm1.clone("Clone Name")
+}}}
+
+The method returns a new instance of virtual machine. The only mandatory parameter is the new VM name. There are some other keyword arguments you might pass:
+
+    * `sync_run`: if True (default) waits for the task to finish, and returns a VIVirtualMachine instance with the new VM (raises an exception if the task didn't succeed). If sync_run is set to False the task is started asynchronously and a VITask instance is returned (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]).
+    * `folder`: name of the folder that will contain the new VM, if not set the vm will be added to the folder the original VM belongs to.
+    * `resourcepool`: MOR (Managed Object Reference)of the resource pool to be used for the new vm. If not set, it uses the same resource pool than the original vm (see [AdvancedUsage#Managed_Object_References]).
+    * `power_on`: If the new VM will be powered on after being created (defaults to True)
+    * `template`: Specifies whether or not the new virtual machine should be marked as a template (default False). 
+
+Note: `resourcepool` is ignored for a clone operation to a template. For a clone operation from a template to a virtual machine, this argument is required.
+
+===*Migrating a Virtual Machine*=== 
+_*since pysphere 0.1.6*_
+
+To cold or hot migrate a VM to a new host or resource pool:
+
+{{{
+>>> vm1.migrate()
+}}}
+
+Other optional keyword argumentes:
+
+    * `sync_run`: if True (default) waits for the task to finish. If sync_run is set to False the task is started asynchronously and a VITask instance is returned (see [GettingStarted#Running_Tasks_Asynchronously Running Tasks Asynchronously]).
+    * `priority`: Either 'default', 'high', or 'low'. Priority of the task that moves the vm. Note this priority can affect both the source and target hosts.
+    * `resource_pool`: MOR (Managed Object Reference) of the target resource pool for the virtual machine. If the parameter is left unset, the virtual machine's current pool is used as the target pool (see [AdvancedUsage#Managed_Object_References]).
+    * `host`: MOR (Managed Object Reference) of the target host to which the virtual machine is intended to migrate. The host parameter may be left unset if the compute resource associated with the target pool represents a stand-alone host or a DRS-enabled cluster. In the former case the stand-alone host is used as the target host. In the latter case, the DRS system selects an appropriate target host from the cluster (see [AdvancedUsage#Managed_Object_References]).
+    * `state`: Either 'POWERED ON', 'POWERED OFF', or 'SUSPENDED'. If specified, the virtual machine migrates only if its state matches the specified state.
+
+
 ===*Running Tasks Asynchronously*===
 
 As mentioned before, there are many methods of a virtual machine that execute synchronously by default (i.e. you don't get the flow control back until the operation has completed) but support asynchronous execution by providing the keyword argument `sync_run=False`.
@@ -562,6 +612,7 @@ This is a list of the virtual machine methods which support this argument:
   * delete_named_snapshot
   * delete_snapshot_by_path
   * create_snapshot
+  * clone
 
 When invoking the method with `sync_run=False`, a `VITask` object will be returned. For example:
 
