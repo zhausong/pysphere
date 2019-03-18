@@ -35,6 +35,7 @@ from pysphere import VIException, VIApiException, FaultTypes
 from pysphere.vi_virtual_machine import VIVirtualMachine
 from pysphere.vi_performance_manager import PerformanceManager
 from pysphere.vi_task_history_collector import VITaskHistoryCollector
+from pysphere.vi_event_history_collector import VIEventHistoryCollector
 from pysphere.vi_mor import VIMor, MORTypes
 
 class VIServer:
@@ -168,6 +169,27 @@ class VIServer:
           'success'
         """
         return VITaskHistoryCollector(self, entity, recursion, states)
+        
+    def get_event_history_collector(self, include_types=None, include_users=None, beginTime=None, endTime=None):
+        """Creates an Event History Collector that gathers Event objects based on the 
+        provides filters.
+          * server: the connected VIServer instance
+          * include_types: if provided, limits the set of collected events by their 
+            types. Should be a list of possible types (like 'UserLoginSessionEvent')
+          * include_users [tuple([user1,userx]:list,system:boolean]: if provided, limits the set of 
+            collected events to those events produced by any of the users indicated in the list.
+            The format is a tuple with a list of possible users as the first parameter, and a 
+            boolean value to indicate if system user is included or not as second parameter.
+          * beginTime [time tuple]: The time from which available history 
+            events are gathered. Corresponds to server time. When the beginTime
+            is omitted, the returned events start from the first available
+            event in the system.
+          * endTime [time tuple]: The time up to which available history
+            events are gathered. Corresponds to server time. When the endTime
+            is omitted, the returned result includes up to the most recent
+            event.
+        """
+        return VIEventHistoryCollector(self, include_types, include_users, beginTime, endTime)
 
     def get_hosts(self, from_mor=None):
         """
